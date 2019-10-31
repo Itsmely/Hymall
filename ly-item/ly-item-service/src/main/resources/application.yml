@@ -1,0 +1,41 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: item-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/heima?serverTimezone=Asia/Shanghai
+    username: root
+    password: password
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    host: 192.168.248.129
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
+    template: #有关amqTemplate的配置
+      retry: #失败重试
+        enabled: true #开启失败重试
+        initial-interval: 10000ms #第一次重试间隔时长
+        max-interval: 300000ms #最长重试间隔，超过这个间隔将不再重试
+        multiplier: 2 #下次重试间隔的倍数，次数即下次重试间隔是上次的2倍
+      exchange: ly.item.exchange #缺省交换机的名称，此处配置后，发送消息如果不指定交换机就会使用这个
+      publisher-confirms: true #生产者确认机制，确保消息会正确发送，如果发送失败会有错误回执，从而触发重试
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+zuul:
+  prefix: /api # 添加路由前缀
+  retryable: true
+  routes:
+    item-service: /item/** # 将商品微服务映射到/item/**

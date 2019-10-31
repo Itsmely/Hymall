@@ -1,0 +1,27 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: goodspage-service
+  thymeleaf:
+    cache: false
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.248.129:9300
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    lease-expiration-duration-in-seconds: 10
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+
+ly:
+  thymeleaf:
+    destPath: C:\Users\lee\Desktop\html
+
+
